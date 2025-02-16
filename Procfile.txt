@@ -1,1 +1,1 @@
-web: python pi.py
+web: gunicorn pi:app
