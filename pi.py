@@ -18,11 +18,14 @@ def get_pixels():
 
     img = Image.open(io.BytesIO(response.content)).convert("RGB")
 
-    img = img.resize((400, 400), Image.ANTIALIAS)
+    # Resize image using LANCZOS for better quality
+    img = img.resize((400, 400), Image.Resampling.LANCZOS)
 
+    # Enhance sharpness (can adjust the factor)
     enhancer = ImageEnhance.Sharpness(img)
-    img = enhancer.enhance(2.0) 
+    img = enhancer.enhance(2.0)  # You can try different values for sharpness
 
+    # Apply UnsharpMask filter to further enhance sharpness
     img = img.filter(ImageFilter.UnsharpMask(radius=2, percent=150, threshold=3))
 
     width, height = img.size
