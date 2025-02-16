@@ -1,6 +1,6 @@
 import os
 from flask import Flask, request, jsonify
-from PIL import Image
+from PIL import Image, ImageEnhance, ImageFilter
 import requests
 import io
 
@@ -17,9 +17,15 @@ def get_pixels():
         return jsonify({"error": "Failed to load image"}), 500
 
     img = Image.open(io.BytesIO(response.content)).convert("RGB")
-    img = img.resize((100, 100)) 
-    width, height = img.size
 
+    img = img.resize((400, 400), Image.ANTIALIAS)
+
+    enhancer = ImageEnhance.Sharpness(img)
+    img = enhancer.enhance(2.0) 
+
+    img = img.filter(ImageFilter.UnsharpMask(radius=2, percent=150, threshold=3))
+
+    width, height = img.size
     pixels = [[img.getpixel((x, y)) for x in range(width)] for y in range(height)]
 
     return jsonify({
