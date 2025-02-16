@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from PIL import Image, ImageFilter, ImageEnhance
+from PIL import Image, ImageFilter
 import requests
 import io
 
@@ -18,20 +18,12 @@ def get_pixels():
     # Open the image and convert it to RGB
     img = Image.open(io.BytesIO(response.content)).convert("RGB")
     
-    # Apply a sharpen filter with more aggressive settings
-    sharpness_filter = ImageFilter.UnsharpMask(radius=2, percent=200, threshold=2)
+    # Apply a sharpen filter
+    sharpness_filter = ImageFilter.UnsharpMask(radius=2, percent=150, threshold=3)
     img = img.filter(sharpness_filter)
     
-    # Enhance the contrast to make details pop
-    enhancer = ImageEnhance.Contrast(img)
-    img = enhancer.enhance(1.5)  # Increase contrast by 50%
-    
-    # Enhance the sharpness further
-    enhancer = ImageEnhance.Sharpness(img)
-    img = enhancer.enhance(2.0)  # Increase sharpness by 100%
-    
     # Resize the image
-    img = img.resize((100, 100)) 
+    img = img.resize((500, 500)) 
     width, height = img.size
 
     # Extract the pixel data
@@ -39,7 +31,7 @@ def get_pixels():
 
     return jsonify({
         "width": width,
-        "height": height, 
+        "height": height,
         "pixels": pixels
     })
 
