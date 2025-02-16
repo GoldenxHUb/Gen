@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from PIL import Image, ImageFilter, ImageEnhance
+from PIL import Image, ImageEnhance, ImageFilter
 import requests
 import io
 
@@ -29,9 +29,10 @@ def get_pixels():
     # เพิ่มความคมชัดอีกครั้ง
     enhancer = ImageEnhance.Sharpness(img)
     img = enhancer.enhance(2.0)  # เพิ่มความคมชัด 100%
-    
-    # ปรับขนาดของภาพให้เต็มที่ตามที่ต้องการ
-    img = img.resize((339, 194))  # ขนาดที่ปรับเป็น 339x194 แทน 100x100
+
+    # ปรับขนาดภาพเป็น 339x194
+    img = img.resize((339, 194), Image.LANCZOS)  # ใช้ LANCZOS เพื่อให้ภาพชัดสุด
+
     width, height = img.size
 
     # ดึงข้อมูลพิกเซลจากภาพ
