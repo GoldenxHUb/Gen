@@ -15,26 +15,26 @@ def get_pixels():
     if response.status_code != 200:
         return jsonify({"error": "Failed to load image"}), 500
 
-    # Open the image and convert it to RGB
+    # เปิดภาพและแปลงเป็น RGB
     img = Image.open(io.BytesIO(response.content)).convert("RGB")
     
-    # Apply a sharpen filter with more aggressive settings
+    # ใช้ฟิลเตอร์ UnsharpMask เพื่อเพิ่มความคมชัด
     sharpness_filter = ImageFilter.UnsharpMask(radius=2, percent=200, threshold=2)
     img = img.filter(sharpness_filter)
     
-    # Enhance the contrast to make details pop
+    # เพิ่มคอนทราสต์ของภาพ
     enhancer = ImageEnhance.Contrast(img)
-    img = enhancer.enhance(1.5)  # Increase contrast by 50%
+    img = enhancer.enhance(1.5)  # เพิ่มคอนทราสต์ 50%
     
-    # Enhance the sharpness further
+    # เพิ่มความคมชัดอีกครั้ง
     enhancer = ImageEnhance.Sharpness(img)
-    img = enhancer.enhance(2.0)  # Increase sharpness by 100%
+    img = enhancer.enhance(2.0)  # เพิ่มความคมชัด 100%
     
-    # Resize the image
-    img = img.resize((100, 100)) 
+    # ปรับขนาดของภาพให้เต็มที่ตามที่ต้องการ
+    img = img.resize((339, 194))  # ขนาดที่ปรับเป็น 339x194 แทน 100x100
     width, height = img.size
 
-    # Extract the pixel data
+    # ดึงข้อมูลพิกเซลจากภาพ
     pixels = [[img.getpixel((x, y)) for x in range(width)] for y in range(height)]
 
     return jsonify({
